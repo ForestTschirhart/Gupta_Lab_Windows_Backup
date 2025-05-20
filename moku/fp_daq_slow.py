@@ -12,7 +12,7 @@ from moku.instruments import Oscilloscope
 import time
 import csv
 
-def savedata(data, metadata, file_prefix='data', output_dir='C:/Users/foresttschirhart/Documents/Gupta_Lab/4-15/locked'):
+def savedata(data, metadata, file_prefix='data', output_dir='C:/Users/foresttschirhart/Documents/Gupta_Lab/4-28/1sec/long_unlock'):
     # abs_time = metadata[0]
     # time = metadata[1]
     # sample_rate = metadata[2]
@@ -46,7 +46,7 @@ try:
     # Trigger on input Channel 1, rising edge, 0V 
     i.set_trigger(type='Edge', source='Input2', level=0)
 
-    # View +-5usec, i.e. trigger in the centre
+    # View +-10msec, i.e. trigger in the centre
     i.set_timebase(-0.01, 0.01)
     sample_rate = i.get_samplerate()
     print(f"Sample rate: {sample_rate}")
@@ -81,7 +81,8 @@ try:
 
     # This loops continuously updates the plot with new data 
     # also saves data at specific intervals
-    time_separation = 60 * 3 # seconds
+    time_separation = 10 # seconds
+    run_time = 30 # seconds
     n = 0
     start_time = time.time()
     print("Start time:", start_time)
@@ -99,7 +100,10 @@ try:
         line2.set_ydata(np.array(data['ch2'])/20)
         line1.set_xdata(data['time'])
         line2.set_xdata(data['time'])
-        plt.pause(0.001)
+        plt.pause(0.01)
+        if current_time >= run_time:
+            break
+    print("Finished Data Run")
         
 except Exception as e:
     i.relinquish_ownership()
